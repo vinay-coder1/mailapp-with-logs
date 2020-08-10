@@ -4,8 +4,7 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.util.Objects;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -13,12 +12,13 @@ import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
+import com.xworkz.controller.LoginController;
 import com.xworkz.dto.LoginDTO;
 
 @Service
 public class LoginServiceImpl implements LoginService {
 
-	private Logger logger = LoggerFactory.getLogger(LoginServiceImpl.class);
+	private static final Logger logger = Logger.getLogger(LoginServiceImpl.class.getName());
 
 	@Autowired
 	private SpringMailService mailService;
@@ -38,7 +38,7 @@ public class LoginServiceImpl implements LoginService {
 	private String temporaryPass;
 
 	public LoginServiceImpl() {
-		logger.info("{} Is Created...........", this.getClass().getSimpleName());
+		logger.info("{} Is Created..........."+ this.getClass().getSimpleName());
 	}
 
 	@Override
@@ -47,10 +47,10 @@ public class LoginServiceImpl implements LoginService {
 
 		String givenPassword = dto.getPassword();
 		loginTime = LocalTime.now();
-		logger.info("Logintime : {}", loginTime);
+		logger.info("Logintime : {}"+ loginTime);
 		Duration timeElapsed = Duration.between(mailsentTime, loginTime);
 		long diffrencetime = timeElapsed.toMinutes();
-		logger.info("Time taken : {}", diffrencetime + " minutes");
+		logger.info("Time taken : {}"+ diffrencetime + " minutes");
 
 		if (diffrencetime <= 10 && temporaryPass != null && givenPassword.equals(temporaryPass)) {
 			logger.info("givenPassword is correct");
@@ -87,12 +87,12 @@ public class LoginServiceImpl implements LoginService {
 				boolean mailvalidation = mailService.validateAndSendMailByMailId(messagePreparator);
 
 				if (mailvalidation) {
-					logger.info("success", "Your Password sent to your mailID");
+					logger.info("success"+"Your Password sent to your mailID");
 					mailsentTime = LocalTime.now();
-					logger.info("MailsentTime: {}", mailsentTime);
+					logger.info("MailsentTime: {}"+ mailsentTime);
 					return true;
 				} else {
-					logger.info("faild", "Password can't able send to your mailID!");
+					logger.info("faild"+ "Password can't able send to your mailID!");
 					return false;
 				}
 
@@ -100,7 +100,7 @@ public class LoginServiceImpl implements LoginService {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger.error(e.getMessage(), e);
+			logger.severe(e.getMessage());
 		}
 		return false;
 

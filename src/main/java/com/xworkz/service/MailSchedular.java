@@ -8,14 +8,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -29,7 +27,7 @@ import com.xworkz.dto.Subscriber;
 @Service("emailService")
 public class MailSchedular {
 
-	private Logger logger = LoggerFactory.getLogger(MailSchedular.class);
+	private static final Logger logger = Logger.getLogger(MailSchedular.class.getName());
 	final String fileName = "./xworkz.xlsx";
 
 	@Autowired
@@ -96,11 +94,11 @@ public class MailSchedular {
 				logger.info(subscribersList.toString());
 			}
 		} catch (FileNotFoundException e) {
-			logger.error("File " + fileName + " Is Not Found");
-			logger.error(e.getMessage());
+			logger.severe("File " + fileName + " Is Not Found");
+			logger.severe(e.getMessage());
 			e.printStackTrace();
 		} catch (IOException e) {
-			logger.error(e.getMessage());
+			logger.severe(e.getMessage());
 		}
 
 		return subscribersList;
