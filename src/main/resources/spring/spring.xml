@@ -59,8 +59,7 @@
 	</bean>
 	
     <task:scheduled-tasks scheduler="myScheduler">
-      <!--   <task:scheduled ref="emailService" method="birthadyMailSender" cron="0 0 8 * * ?" /> -->
-		<task:scheduled ref="emailService" method="birthadyMailSender" cron="0 0 17 *	* ?" />
+		<task:scheduled ref="emailService" method="birthadyMailSender" cron="0 0 13 * * ?" />
 	</task:scheduled-tasks>
 
 	<task:scheduler id="myScheduler" pool-size="10" />

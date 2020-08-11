@@ -227,6 +227,12 @@
 			<version>${shared-configuration.version}</version>
 			<type>pom</type>
 		</dependency>
+		 <dependencies>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-logging-logback</artifactId>
+      <version>0.118.1-alpha</version>
+    </dependency>
 		<!-- https://mvnrepository.com/artifact/com.google.appengine/appengine-maven-plugin -->
 		<dependency>
 			<groupId>com.google.appengine</groupId>

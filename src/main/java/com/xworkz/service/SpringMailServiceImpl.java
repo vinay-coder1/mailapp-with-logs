@@ -1,9 +1,9 @@
 package com.xworkz.service;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessagePreparator;
@@ -11,7 +11,7 @@ import org.springframework.mail.javamail.MimeMessagePreparator;
 @Service
 public class SpringMailServiceImpl implements SpringMailService {
 
-	private static final Logger logger = Logger.getLogger(SpringMailServiceImpl.class.getName());
+	private Logger logger = LoggerFactory.getLogger(SpringMailServiceImpl.class);
 
 	@Autowired
 	private JavaMailSender mailSender;
@@ -30,7 +30,7 @@ public class SpringMailServiceImpl implements SpringMailService {
 			return true;
 		} catch (MailException e) {
 			logger.info("Mail sent Faild!");
-			logger.severe(e.getMessage());
+			logger.error(e.getMessage(), e);
 		}
 		return false;
 	}

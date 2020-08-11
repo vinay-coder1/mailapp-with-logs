@@ -7,18 +7,19 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import org.json.JSONObject;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class SMSServiceImpl implements SMSService {
 
-	private static final Logger logger = Logger.getLogger(SMSServiceImpl.class.getName());
+	Logger logger = LoggerFactory.getLogger(SMSServiceImpl.class);
 
 	public String sendCampaign(String apiKey, String secretKey, String useType, String phone, String message,
 			String senderId) {
 		try {
-			logger.info("\n\n\nPhone number is {}\n\n"+ phone);
+			logger.info("\n\n\nPhone number is {}\n\n", phone);
 			// construct data
 			JSONObject urlParameters = new JSONObject();
 			urlParameters.put("apikey", apiKey);
@@ -37,12 +38,12 @@ public class SMSServiceImpl implements SMSService {
 			// get the response
 			BufferedReader bufferedReader = null;
 			if (httpConnection.getResponseCode() == 200) {
-				logger.fine("Response code is {}"+ httpConnection.getResponseCode());
+				logger.debug("Response code is {}", httpConnection.getResponseCode());
 				bufferedReader = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
-				logger.fine("Success contact number is {}"+ httpConnection);
+				logger.debug("Success contact number is {}", httpConnection);
 			} else {
 				bufferedReader = new BufferedReader(new InputStreamReader(httpConnection.getErrorStream()));
-				logger.fine("Fail contact number is {}"+ phone);
+				logger.debug("Fail contact number is {}", phone);
 			}
 			StringBuilder content = new StringBuilder();
 			String line;
@@ -50,12 +51,12 @@ public class SMSServiceImpl implements SMSService {
 				content.append(line).append("\n");
 			}
 			bufferedReader.close();
-			logger.fine("Content is {}"+ content);
+			logger.debug("Content is {}", content);
 //		    return content.toString();
 			return content.toString();
 		} catch (Exception ex) {
 //	    	  logger.debug("Content is {}",content.toString());
-			logger.severe("Exception is {} and message is {}"+ ex+ ex.getMessage());
+			logger.error("Exception is {} and message is {}", ex, ex.getMessage());
 			return "{'status':500,'message':'Internal Server Error'}";
 		}
 
@@ -123,7 +124,7 @@ public class SMSServiceImpl implements SMSService {
 			// get the response
 			BufferedReader bufferedReader = null;
 			if (httpConnection.getResponseCode() == 200) {
-				logger.info("200----->> {}"+ httpConnection.getContent());
+				logger.info("200----->> {}", httpConnection.getContent());
 				bufferedReader = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
 			} else {
 				bufferedReader = new BufferedReader(new InputStreamReader(httpConnection.getErrorStream()));
@@ -131,15 +132,15 @@ public class SMSServiceImpl implements SMSService {
 			StringBuilder content = new StringBuilder();
 			String line;
 			while ((line = bufferedReader.readLine()) != null) {
-				logger.info("line {}"+ line);
+				logger.info("line {}", line);
 				content.append(line).append("\n");
 
 			}
 			bufferedReader.close();
-			logger.info("Content is {}"+ content.toString());
+			logger.info("Content is {}", content.toString());
 			return content.toString();
 		} catch (Exception ex) {
-			logger.severe("exception is {} and message is {}"+ ex+ ex.getMessage());
+			logger.error("exception is {} and message is {}", ex, ex.getMessage());
 			return "{'status':500,'message':'Internal Server Error'}";
 		}
 	}
