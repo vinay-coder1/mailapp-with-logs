@@ -1,8 +1,6 @@
 package com.xworkz.dto;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,7 +10,7 @@ import lombok.ToString;
 @ToString
 public class SendMailDTO {
 
-	private Logger logger = LoggerFactory.getLogger(LoginDTO.class);
+	private static final Logger logger = Logger.getLogger(SendMailDTO.class.getName());
 
 	private Integer msgType;
 	private String subName;
@@ -30,7 +28,7 @@ public class SendMailDTO {
 	private String time;
 
 	public SendMailDTO() {
-		logger.info("{} Is Created...........", this.getClass().getSimpleName());
+		logger.info("{} Is Created..........."+ this.getClass().getSimpleName());
 	}
 
 }

@@ -2,8 +2,7 @@ package com.xworkz.controller;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -31,24 +30,24 @@ public class MailController {
 	@Autowired
 	private OkHttpClientService clientService;
 
-	private Logger logger = LoggerFactory.getLogger(MailController.class);
+	private static final Logger logger = Logger.getLogger(MailController.class.getName());
 
 	public MailController() {
-		logger.info("{} Is Created...........", this.getClass().getSimpleName());
+		logger.info("{} Is Created..........."+ this.getClass().getSimpleName());
 	}
-
-	@RequestMapping(value = "/sendSMS.do", method = RequestMethod.POST)
+	
+	@RequestMapping(value = "/sendSMS.do",  method = RequestMethod.POST)
 	public ModelAndView sendSMS(@RequestParam("uploadFile") MultipartFile file, @RequestParam("msg") String msg) {
 		logger.info("is called....");
 
 		ModelAndView modelAndView = new ModelAndView("index");
 		if (!file.isEmpty()) {
-			logger.debug("contant type {}", file.getContentType());
+			logger.fine("contant type {}"+ file.getContentType());
 			List<String> contactList = xworkzService.getContactListFromXls(file);
 			if (contactList != null) {
 				xworkzService.sendMSG(contactList, msg);
 			}
-			logger.info("Is file is Empty {}", contactList.isEmpty());
+			logger.info("Is file is Empty {}"+contactList.isEmpty());
 		} else {
 			modelAndView.addObject("msg", "File is not found.........");
 		}
@@ -61,39 +60,39 @@ public class MailController {
 	public MailChimpList getList(@RequestHeader("Accept") HttpHeaders headers,
 			@RequestParam("msgType") Integer msgType) {
 		MailChimpList list = new Gson().fromJson(clientService.getAllMailChimpList(msgType), MailChimpList.class);
-		logger.info("List is {}", list);
+		logger.info("List is {}"+ list);
 		return list;
 
 	}
 
 	@RequestMapping(value = "newsfeed.do", method = RequestMethod.POST)
 	public ModelAndView sendNewsFeed(@ModelAttribute SendMailDTO mailDTO) {
-		logger.info("Image Url Is {}", mailDTO.getImageURL());
+		logger.info("Image Url Is {}"+ mailDTO.getImageURL());
 		return sendMail(mailDTO);
 	}
 
 	@RequestMapping(value = "newJoiner.do", method = RequestMethod.POST)
 	public ModelAndView sendNewJoiner(@ModelAttribute SendMailDTO mailDTO) {
-		logger.info("data is {}", mailDTO);
+		logger.info("data is {}"+ mailDTO);
 		clientService.getHTMLTextFromFile(mailDTO);
 		return sendMail(mailDTO);
 	}
 
 	@RequestMapping(value = "feesPaid.do", method = RequestMethod.POST)
 	public ModelAndView sendFeesAcknnowledgement(@ModelAttribute SendMailDTO mailDTO) {
-		logger.info("data is {}", mailDTO);
+		logger.info("data is {}"+ mailDTO);
 		return sendMail(mailDTO);
 	}
 
 	@RequestMapping(value = "birthdayGreeting.do", method = RequestMethod.POST)
 	public ModelAndView sendBirthdayGreeting(@ModelAttribute SendMailDTO mailDTO) {
-		logger.info("Image Url is {}", mailDTO.getImageURL());
+		logger.info("Image Url is {}"+ mailDTO.getImageURL());
 		return sendMail(mailDTO);
 	}
 
 	@RequestMapping(value = "courseContain.do", method = RequestMethod.POST)
 	public ModelAndView sendCourseContain(@ModelAttribute SendMailDTO mailDTO) {
-		logger.info("data is {}", mailDTO);
+		logger.info("data is {}"+ mailDTO);
 		return sendMail(mailDTO);
 	}
 
@@ -108,7 +107,7 @@ public class MailController {
 			return campaignCreate(dto, modelAndView, campaignId);
 		} else {
 			modelAndView.addObject("msg", "List Name Was Not Found............");
-			logger.error("List Name Was Not Found............");
+			logger.severe("List Name Was Not Found............");
 			return modelAndView;
 		}
 	}
@@ -120,7 +119,7 @@ public class MailController {
 			return editMail(modelAndView, campaignId, edit, dto.getMsgType());
 		} else {
 			modelAndView.addObject("msg", "Campaign Is Not Created............");
-			logger.error("Campaign Is Not Created............");
+			logger.severe("Campaign Is Not Created............");
 			return modelAndView;
 		}
 	}
@@ -132,7 +131,7 @@ public class MailController {
 			return send(modelAndView, result);
 		} else {
 			modelAndView.addObject("msg", "Campaign Is not Edited................");
-			logger.error("Campaign Is not Edited...............");
+			logger.severe("Campaign Is not Edited...............");
 			return modelAndView;
 		}
 	}
@@ -144,7 +143,7 @@ public class MailController {
 			return modelAndView;
 		} else {
 			modelAndView.addObject("msg", "Mail sent faild, Please Try Again................");
-			logger.error("Mail Was Not Sended................");
+			logger.severe("Mail Was Not Sended................");
 			return modelAndView;
 		}
 	}
@@ -152,7 +151,7 @@ public class MailController {
 	@RequestMapping(value = "/getReport.do", produces = "application/JSON", method = RequestMethod.GET)
 	@ResponseBody
 	public String data() {
-		logger.info("invoked {}", this.getClass().getSimpleName());
+		logger.info("invoked {}"+ this.getClass().getSimpleName());
 		return xworkzService.getReport("2019-12-01", "2020-01-30");
 	}
 }

@@ -1,20 +1,19 @@
 package com.xworkz.service;
 
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import com.xworkz.controller.LoginController;
 import com.xworkz.util.EncryptionHelper;
 import com.xworkz.util.ExcelHelper;
 
 @Service
 public class XworkzServiceImpl implements XworkzService {
 
-	static Logger logger = LoggerFactory.getLogger(XworkzServiceImpl.class);
+	private static final Logger logger = Logger.getLogger(LoginController.class.getName());
 	@Autowired
 	ExcelHelper excelHelper;
 	@Autowired
@@ -37,7 +36,7 @@ public class XworkzServiceImpl implements XworkzService {
 				file.getBytes();
 				String filename = file.getOriginalFilename();
 				// Creating the directory to store file
-				logger.info("File name is {}", filename);
+				logger.info("File name is {}"+ filename);
 
 				if ((file.getInputStream() != null)) {
 					contactList = excelHelper.getContactListFromInputStream(file.getInputStream());
@@ -55,13 +54,13 @@ public class XworkzServiceImpl implements XworkzService {
 			if (phone.length() == 10) {
 				try {
 					Thread.sleep(6000);
-					logger.debug("API KEY is {} Secret Key is {} Sender id is {} useType is {}",
-							encryptionHelper.decrypt(apiKey), encryptionHelper.decrypt(secretKey), senderId, useType);
+					logger.fine("API KEY is {} Secret Key is {} Sender id is {} useType is {}"+
+							encryptionHelper.decrypt(apiKey)+ encryptionHelper.decrypt(secretKey)+ senderId+ useType);
 					String res = smsService.sendCampaign(encryptionHelper.decrypt(apiKey),
 							encryptionHelper.decrypt(secretKey), useType, phone, message, senderId);
-					logger.info("Result is {}", res);
+					logger.info("Result is {}"+ res);
 				} catch (InterruptedException e) {
-					logger.error("\n\nMessage is {} and exception is {}\n\n\n\n\n", e.getMessage(), e);
+					logger.severe("\n\nMessage is {} and exception is {}\n\n\n\n\n"+ e.getMessage()+ e);
 				}
 
 			}

@@ -1,7 +1,7 @@
 package com.xworkz.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
@@ -17,7 +17,7 @@ import com.xworkz.service.LoginService;
 @RequestMapping("/")
 public class LoginController {
 
-	private Logger logger = LoggerFactory.getLogger(LoginController.class);
+	private static final Logger logger = Logger.getLogger(LoginController.class.getName());
 
 	@Value("${login.username}")
 	private String username;
@@ -26,7 +26,7 @@ public class LoginController {
 	private LoginService loginService;
 
 	public LoginController() {
-		logger.info("{} Is Created...........", this.getClass().getSimpleName());
+		logger.info("{} Is Created..........."+this.getClass().getSimpleName());
 	}
 
 	@RequestMapping(value = "/otp.do", method = RequestMethod.POST)
@@ -48,7 +48,7 @@ public class LoginController {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger.error(e.getMessage(), e);
+			logger.severe(e.getMessage());
 		}
 		return modelAndView;
 	}
@@ -73,7 +73,7 @@ public class LoginController {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger.error(e.getMessage(), e);
+			logger.severe(e.getMessage());
 		}
 
 		return null;

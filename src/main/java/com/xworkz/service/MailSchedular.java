@@ -1,21 +1,20 @@
 package com.xworkz.service;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -29,8 +28,7 @@ import com.xworkz.dto.Subscriber;
 @Service("emailService")
 public class MailSchedular {
 
-	private Logger logger = LoggerFactory.getLogger(MailSchedular.class);
-	final String fileName = "./xworkz.xlsx";
+	private static final Logger logger = Logger.getLogger(MailSchedular.class.getName());
 
 	@Autowired
 	private SpringMailService emailService;
@@ -42,18 +40,18 @@ public class MailSchedular {
 	@Value("${mailFrom}")
 	private String mailFrom;
 
-	public void birthadyMailSender() {
-		logger.info("In birthadyMailSender");
+	public void birthadyMailSender() throws URISyntaxException, IOException {
+		logger.info("Invoked birthadyMailSender");
 		List<Subscriber> subcriberList = getListOfSubscribersFromExcel();
 
 		for (Subscriber subscriber : subcriberList) {
-			SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+			SimpleDateFormat formatter = new SimpleDateFormat("dd-MM");
 			Date date = new Date();
-			
-			 // logger.info("local date " + formatter.format(date));
-			 // logger.info("subscriber dob " + subscriber.getDob() + " Formated " + formatter.format(subscriber.getDob()));
-			 // logger.info("Mathed DOB " +formatter.format(subscriber.getDob()).equals(formatter.format(date)));
-			 
+
+			logger.info("local date " + formatter.format(date));
+			logger.info("subscriber dob " + subscriber.getDob() + " Formated " + formatter.format(subscriber.getDob()));
+			logger.info("Mathed DOB " + formatter.format(subscriber.getDob()).equals(formatter.format(date)));
+
 			if (formatter.format(subscriber.getDob()).equals(formatter.format(date))) {
 				Context context1 = new Context();
 				context1.setVariable("subcriberName", subscriber.getFullName());
@@ -73,36 +71,47 @@ public class MailSchedular {
 
 	}
 
+	@SuppressWarnings("resource")
 	public List<Subscriber> getListOfSubscribersFromExcel() {
-
-		Workbook workbook = null;
 		List<Subscriber> subscribersList = new ArrayList<Subscriber>();
-		logger.info("Staring..........");
-		int i = 0;
-		try (FileInputStream inputStream = new FileInputStream(new File(fileName))) {
-			workbook = new XSSFWorkbook(inputStream);
-			Sheet excelSheet = workbook.getSheetAt(0);
-			logger.info("Last Row Number Is: " + excelSheet.getLastRowNum());
-			logger.info("Excel file Is opened");
+		try {
+			int i = 0;
+			URL url = new URL("https://github.com/vinay-coder1/thor/raw/master/xworkz.xlsx");
+			HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
+			int responseCode = httpConn.getResponseCode();
+			System.out.println("responseCode=" + responseCode);
 
-			for (Row row : excelSheet) { // For each Row.
-				Cell dobCell = row.getCell(0); // Get the Cell at the Index / Column you want.
-				Cell nameCell = row.getCell(1);
-				Cell emailCell = row.getCell(2);
-				subscribersList.add(new Subscriber(dobCell.getDateCellValue(), nameCell.getStringCellValue(),
-						emailCell.getStringCellValue()));
-				logger.info("No: " + (++i) + " Value: " + nameCell.getStringCellValue() + "Is Readed and Stored in List");
-				logger.info(subscribersList.toString());
+			
+			if (responseCode == HttpURLConnection.HTTP_OK) {
+				Workbook workbook = null;
+				logger.info("Staring..........");
+				
+				InputStream inputStream = httpConn.getInputStream();
+				workbook = new XSSFWorkbook(inputStream);
+				Sheet excelSheet = workbook.getSheetAt(0);
+				logger.info("Last Row Number of Is Excel file: " + excelSheet.getLastRowNum());
+				logger.info("Excel file Is opened");
+
+				for (Row row : excelSheet) { // For each Row.
+
+					Cell nameCell = row.getCell(0);
+					Cell emailCell = row.getCell(1);
+					Cell dobCell = row.getCell(2);
+
+					subscribersList.add(new Subscriber(nameCell.getStringCellValue(), emailCell.getStringCellValue(),
+							dobCell.getDateCellValue()));
+					logger.info("No: " + (++i) + " Value: " + nameCell.getStringCellValue()
+							+ " Data Is Read and Stored in List");
+					logger.info(subscribersList.toString());
+				}
+			} else {
+				System.out.println("responseCode=" + responseCode);
 			}
-		} catch (FileNotFoundException e) {
-			logger.error("File " + fileName + " Is Not Found");
-			logger.error(e.getMessage());
-			e.printStackTrace();
 		} catch (IOException e) {
-			logger.error(e.getMessage());
+			logger.severe(e.getMessage());
 		}
-
 		return subscribersList;
+
 	}
 
 }

@@ -2,8 +2,7 @@ package com.xworkz.dto;
 
 import java.io.Serializable;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Logger;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,12 +13,12 @@ public class LoginDTO implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
-	private Logger logger = LoggerFactory.getLogger(LoginDTO.class);
+	private static final Logger logger = Logger.getLogger(LoginDTO.class.getName());
 	private String userName;
 	private String password;
 
 	public LoginDTO() {
-		logger.info("{} Is Created...........", this.getClass().getSimpleName());
+		logger.info("{} Is Created..........."+ this.getClass().getSimpleName());
 	}
 
 }
