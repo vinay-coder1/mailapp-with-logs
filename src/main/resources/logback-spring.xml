@@ -1,4 +1,4 @@
-<!-- <?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="true">
 
 	<property name="USER_HOME" value=".log" />
@@ -16,7 +16,6 @@
 			<onMismatch>DENY</onMismatch>
 		</filter>
 	</appender>
-
 
 	<appender name="FILE-ENGINE"
 		class="ch.qos.logback.core.FileAppender">
@@ -42,4 +41,3 @@
 	</root>
 
 </configuration>
- -->

@@ -47,7 +47,7 @@
 		<property name="host" value="smtp.gmail.com" />
 		<property name="port" value="587" />
 		<property name="username" value="xworkzdev@gmail.com" />
-		<property name="password" value="Think@Pad_Xworkz789" />
+		<property name="password" value="KeepIT@Temp789" />
 		<property name="javaMailProperties">
 			<props>
 				<prop key="mail.transport.protocol">smtp</prop>
@@ -59,14 +59,13 @@
 	</bean>
 	
 	<bean id="myTriggerId" class="org.springframework.scheduling.support.CronTrigger">
-    <constructor-arg name="expression" value="0 42 18 * * ?"/>
-    <constructor-arg name="timeZone" value="IST"/>
+    <constructor-arg name="expression" value="0 8 17 * * ?"/>
+     <constructor-arg name="timeZone" value="IST"/>
     </bean>
-
-    <task:scheduled-tasks scheduler="myScheduler">
-        <!-- <task:scheduled ref="emailService" method="birthadyMailSender" cron="0 0 8 * * ?" /> -->
-		<task:scheduled ref="emailService" method="birthadyMailSender" trigger="myTriggerId"/>
-	</task:scheduled-tasks>
+    
+    <task:scheduled-tasks scheduler="myScheduler">	    
+		<task:scheduled ref="emailService" method="birthadyMailSender" trigger="myTriggerId"/> 
+	</task:scheduled-tasks>	
 
 	<task:scheduler id="myScheduler" pool-size="10" />
 </beans>
